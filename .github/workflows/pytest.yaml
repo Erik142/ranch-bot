@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "test"
+  # This workflow contains a single job called "install-test"
   install-test:
     runs-on: ubuntu-latest
 
