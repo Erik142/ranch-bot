@@ -29,7 +29,7 @@ if prefix is None:
 intents = discord.Intents.default()
 
 # only 'info' functions for starting point
-cogs: list = ["Functions.infos.info"]
+cogs: list = ["functions.infos.info"]
 
 client = commands.Bot(command_prefix=prefix, help_command=None, intents=intents)
 
