@@ -1,5 +1,6 @@
 import os
 import sys
+from pathlib import Path
 
 import discord
 from discord.ext import commands
@@ -34,11 +35,28 @@ def checkConfigValues():
 
 
 class App(commands.Bot):
+    __COGS_BASE_PATH = "./functions"
+    __COG_FILE_REGEXP = "**/*.py"
+
     def __init__(self):
         super().__init__(
             command_prefix=prefix, help_command=None, intents=discord.Intents.default()
         )
-        self.__COGS: list = ["functions.infos.info"]
+        self.__COGS = self.__getCogs()
+
+    def __getCogs(self) -> list[str]:
+        cogs = list[str]()
+        for path in Path(self.__COGS_BASE_PATH).glob(self.__COG_FILE_REGEXP):
+            pathStr = str(path)
+            if "__init__.py" not in pathStr:
+                pathStr = str.removesuffix(pathStr, ".py")
+                pathStr = str.replace(pathStr, ".", "")
+                pathStr = str.removeprefix(pathStr, "/")
+                pathStr = str.removesuffix(pathStr, "/")
+                pathStr = str.replace(pathStr, "/", ".")
+                cogs.append(pathStr)
+
+        return cogs
 
     async def on_ready(self):
         print("Bot is ready!")
