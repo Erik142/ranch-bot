@@ -15,7 +15,7 @@ class info(commands.Cog):
             colour=discord.Colour.orange()
         )
         info_board.set_footer(text="NakedCowboy")
-        info_board.set_author(name="SeriousCoal")
+        info_board.set_author(name="By SeriousCoal")
         info_board.add_field(name="Commands", value="Send '$help' for commands.", inline=True)
         await ctx.send(embed=info_board)
 
