@@ -1,5 +1,6 @@
 import os
 import sys
+from sys import platform
 from pathlib import Path
 
 import discord
@@ -12,7 +13,6 @@ load_dotenv()
 token = os.environ.get("TOKEN")
 status = os.environ.get("STATUS")
 prefix = os.environ.get("PREFIX")
-
 
 def checkConfigValues():
     if token is None or token == "":
@@ -35,6 +35,7 @@ def checkConfigValues():
 
 
 class App(commands.Bot):
+    
     __COGS_BASE_PATH = "./functions"
     __COG_FILE_REGEXP = "**/*.py"
 
@@ -45,17 +46,19 @@ class App(commands.Bot):
         self.__COGS = self.__getCogs()
 
     def __getCogs(self) -> list[str]:
+        pathSeparator = "/"
+        if platform == "win32":
+            pathSeparator = "\\"
         cogs = list[str]()
         for path in Path(self.__COGS_BASE_PATH).glob(self.__COG_FILE_REGEXP):
             pathStr = str(path)
             if "__init__.py" not in pathStr:
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
-                pathStr = str.removeprefix(pathStr, "/")
-                pathStr = str.removesuffix(pathStr, "/")
-                pathStr = str.replace(pathStr, "/", ".")
+                pathStr = str.removeprefix(pathStr, pathSeparator)
+                pathStr = str.removesuffix(pathStr, pathSeparator)
+                pathStr = str.replace(pathStr, pathSeparator, ".")
                 cogs.append(pathStr)
-
         return cogs
 
     async def on_ready(self):
@@ -71,7 +74,6 @@ class App(commands.Bot):
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
                 print("Failed to load cog {}\n{}".format(cog, exc))
-
 
 if __name__ == "__main__":
     checkConfigValues()
