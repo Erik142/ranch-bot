@@ -25,27 +25,27 @@ class info(commands.Cog):
         await ctx.send(embed=helpEmbed)
 
     def __getInfoEmbed(self) -> discord.Embed:
-        embed = embed.getBaseEmbed(discord.Colour.orange())
-        embed.add_field(
+        infoEmbed = embed.getBaseEmbed(discord.Colour.orange())
+        infoEmbed.add_field(
             name="Commands", value="Send '$help' for commands.", inline=True
         )
-        return embed
+        return infoEmbed
 
     def __getHelpEmbed(self) -> discord.Embed:
-        embed = embed.getBaseEmbed(discord.Colour.blue())
-        embed.add_field(name="$avatar", value="Shows avatar.", inline=False)
-        embed.add_field(name="$info", value="Info about the bot.", inline=False)
-        embed.add_field(name="$coinflip", value="Decide your fate.", inline=False)
-        embed.add_field(
+        helpEmbed = embed.getBaseEmbed(discord.Colour.blue())
+        helpEmbed.add_field(name="$avatar", value="Shows avatar.", inline=False)
+        helpEmbed.add_field(name="$info", value="Info about the bot.", inline=False)
+        helpEmbed.add_field(name="$coinflip", value="Decide your fate.", inline=False)
+        helpEmbed.add_field(
             name="$mirror", value="Bot mirrors your sentence.", inline=False
         )
-        embed.add_field(
+        helpEmbed.add_field(
             name="$brokethesentence", value="Brokes the sentence.", inline=False
         )
-        embed.add_field(
+        helpEmbed.add_field(
             name="$length", value="Give you length the sentence.", inline=False
         )
-        return embed
+        return helpEmbed
 
 
 def setup(bot):
