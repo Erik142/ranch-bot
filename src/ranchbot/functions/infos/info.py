@@ -1,4 +1,6 @@
 import discord
+from discord import user
+from discord import client
 from discord.ext import commands
 
 from util.embed import embed
@@ -14,9 +16,11 @@ class info(commands.Cog):
         infoEmbed = self.__getInfoEmbed()
         await ctx.send(embed=infoEmbed)
 
+#currently developing avatar embed
     @commands.command()
     async def avatar(self, ctx):
-        await ctx.send(ctx.author.avatar_url)
+        avatarEmbed = self.__getAvatarEmbed()
+        await ctx.send(embed=avatarEmbed)
 
     @commands.command()
     async def help(self, ctx):
@@ -33,20 +37,25 @@ class info(commands.Cog):
 
     def __getHelpEmbed(self) -> discord.Embed:
         helpEmbed = embed.getBaseEmbed(discord.Colour.blue())
-        helpEmbed.add_field(name="$avatar", value="Shows avatar.", inline=False)
-        helpEmbed.add_field(name="$info", value="Info about the bot.", inline=False)
-        helpEmbed.add_field(name="$coinflip", value="Decide your fate.", inline=False)
+        helpEmbed.add_field(name="$avatar", value="Shows avatar", inline=False)
+        helpEmbed.add_field(name="$info", value="Info about the bot", inline=False)
+        helpEmbed.add_field(name="$coinflip", value="Decide your fate", inline=False)
         helpEmbed.add_field(
-            name="$mirror", value="Bot mirrors your sentence.", inline=False
+            name="$mirror", value="Bot mirrors your sentence", inline=False
         )
         helpEmbed.add_field(
-            name="$brokethesentence", value="Brokes the sentence.", inline=False
+            name="$brokethesentence", value="Brokes the sentence", inline=False
         )
+        helpEmbed.add_field(name="$guessgame", value="Number guessing game!", inline=False)
         helpEmbed.add_field(
-            name="$length", value="Give you length the sentence.", inline=False
+            name="$length", value="Give you length of the sentence", inline=False
         )
         return helpEmbed
 
+    def __getAvatarEmbed(self) -> discord.Embed:
+        avatarEmbed = embed.getBaseEmbed(discord.Colour.green())
+        avatarEmbed.add_field(name="Avatar viewer", value="This has not been implemented yet...", inline=True)
+        return avatarEmbed
 
 def setup(bot):
     bot.add_cog(info(bot))
