@@ -26,4 +26,4 @@ jobs:
       - name: Test
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: run pytest # Run `pytest` command
+          command: run test # Run `pytest` command
