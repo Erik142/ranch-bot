@@ -5,7 +5,8 @@ name: Publish container image in registry
 
 on:
   push:
-    tags: 'v*'
+    tags: 
+      - 'v*.*.*'
 
 jobs:
   publish-image:
