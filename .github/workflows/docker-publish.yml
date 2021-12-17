@@ -4,13 +4,12 @@
 name: Publish container image in registry
 
 on:
-  push:
-    tags: 
-      - 'v*.*.*'
+  create:
 
 jobs:
   publish-image:
     name: publish
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
