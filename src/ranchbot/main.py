@@ -36,7 +36,7 @@ def checkConfigValues():
 
 class App(commands.Bot):
     
-    __COGS_BASE_PATH = "./functions"
+    __COGS_BASE_PATH = "functions"
     __COG_FILE_REGEXP = "**/*.py"
 
     def __init__(self):
@@ -50,11 +50,16 @@ class App(commands.Bot):
         if platform == "win32":
             pathSeparator = "\\"
         cogs = list[str]()
-        for path in Path(self.__COGS_BASE_PATH).glob(self.__COG_FILE_REGEXP):
+        scriptPath = os.path.dirname(os.path.realpath(__file__))
+        cogsPath = os.path.join(scriptPath, self.__COGS_BASE_PATH)
+
+        for path in Path(cogsPath).glob(self.__COG_FILE_REGEXP):
             pathStr = str(path)
             if "__init__.py" not in pathStr:
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
+                pathStr = pathStr[pathStr.find(self.__COGS_BASE_PATH):]
+                print(pathStr)
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
                 pathStr = str.replace(pathStr, pathSeparator, ".")
