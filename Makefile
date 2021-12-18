@@ -6,6 +6,6 @@
 
 .PHONY: test
 test:
-	PYTHONPATH=./src/ranchbot pytest
+	PYTHONPATH=./src/ranchbot pytest --cov --cov-branch --cov-report term-missing
 
 # end
