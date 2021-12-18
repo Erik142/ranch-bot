@@ -9,19 +9,9 @@ import discord.ext.test as dpytest
 from discord.embeds import EmbedProxy
 
 
-@pytest.fixture
-def bot(event_loop):
-    bot = App("$", "Alive.", event_loop)
-    dpytest.configure(bot)
-    bot.loadCommands()
-    return bot
-
-
 def test_infoEmbed():
     info = Info(None)
     infoEmbed = info._Info__getInfoEmbed()
-
-    proxy = EmbedProxy({"name": "Commands", "value": "Send '$help' for commands."})
 
     assert infoEmbed.fields[0].name == "Commands"
     assert infoEmbed.fields[0].value == "Send '$help' for commands."
