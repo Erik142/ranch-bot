@@ -3,7 +3,7 @@
 import asyncio
 import pytest
 
-from functions.infos.info import Info
+from commands.infos.info import Info
 from main import App
 import discord.ext.test as dpytest
 from discord.embeds import EmbedProxy

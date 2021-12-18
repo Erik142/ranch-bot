@@ -38,7 +38,7 @@ def checkConfigValues():
 
 class App(commands.Bot):
 
-    __COGS_BASE_PATH = "functions"
+    __COGS_BASE_PATH = "commands"
     __COG_FILE_REGEXP = "**/*.py"
 
     __STATUS = ""
