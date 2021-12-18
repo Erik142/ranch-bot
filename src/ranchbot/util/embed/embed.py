@@ -2,8 +2,8 @@
 import discord
 
 
-def getBaseEmbed(colour: discord.Colour) -> discord.Embed:
-    embed = discord.Embed(title="RanchBot", colour=colour)
+def getBaseEmbed(title, colour: discord.Colour) -> discord.Embed:
+    embed = discord.Embed(title=title, colour=colour)
     embed.set_footer(text="RanchBot")
-    embed.set_author(name="SeriousCoal|Erkaberkaboi|Stumblingthroughlife|jarrett")
+    embed.set_author(name="RanchBot")
     return embed
