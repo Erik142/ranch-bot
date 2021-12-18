@@ -1,0 +1,29 @@
+# This workflow will trigger pytest on pull requests
+
+name: Run unit tests
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on pull request events
+  pull_request:
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  # This workflow contains a single job called "install-test"
+  install-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependecies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install -d # Install all dependencies, including development ones
+
+      - name: Test
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run test # Run `pytest` command
