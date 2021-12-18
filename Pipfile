@@ -6,9 +6,14 @@ name = "pypi"
 [packages]
 "discord.py" = "*"
 python-dotenv = "*"
-pytest = "*"
+dpytest = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
+pytest = "*"
 
 [requires]
 python_version = "3.9"
+
+[scripts]
+test = "make test"
