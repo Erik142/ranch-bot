@@ -7,6 +7,8 @@ from asyncio import AbstractEventLoop
 import discord
 from discord.ext import commands
 
+from util.log import log
+
 
 class Bot(commands.Bot):
 
@@ -14,6 +16,7 @@ class Bot(commands.Bot):
     __COG_FILE_REGEXP = "**/*.py"
 
     __STATUS = ""
+    __LOGGER = log.getLogger(__name__)
 
     def __init__(self, prefix: str, status: str, eventLoop: AbstractEventLoop = None):
         intents = discord.Intents.default()
@@ -49,7 +52,7 @@ class Bot(commands.Bot):
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
                 pathStr = pathStr[pathStr.find(self.__COGS_BASE_PATH) :]
-                print(pathStr)
+                self.__LOGGER.debug(pathStr)
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
                 pathStr = str.replace(pathStr, pathSeparator, ".")
@@ -59,15 +62,15 @@ class Bot(commands.Bot):
     def loadCommands(self):
         for cog in self.__COGS:
             try:
-                print(f"Loading cog {cog}")
+                self.__LOGGER.info(f"Loading cog {cog}")
                 self.load_extension(cog)
-                print(f"Loaded cog {cog}")
+                self.__LOGGER.info(f"Loaded cog {cog}")
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
-                print("Failed to load cog {}\n{}".format(cog, exc))
+                self.__LOGGER.error("Failed to load cog {}\n{}".format(cog, exc))
 
     async def on_ready(self):
-        print("Bot is ready!")
+        self.__LOGGER.info("Bot is ready!")
         await self.change_presence(
             status=discord.Status.online, activity=discord.Game(self.__STATUS)
         )
