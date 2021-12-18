@@ -4,7 +4,6 @@ import asyncio
 import pytest
 
 from commands.help.help import Help
-from main import App
 import discord.ext.test as dpytest
 from discord.embeds import EmbedProxy
 

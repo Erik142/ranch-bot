@@ -2,12 +2,12 @@
 
 import pytest
 import discord.ext.test as dpytest
-from main import App
+from core.bot import Bot
 
 
 @pytest.fixture
 def bot(event_loop):
-    bot = App("$", "Alive.", event_loop)
+    bot = Bot("$", "Alive.", event_loop)
     dpytest.configure(bot)
     bot.loadCommands()
     return bot
