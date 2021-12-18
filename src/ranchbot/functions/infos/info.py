@@ -29,6 +29,7 @@ class Info(commands.Cog):
         infoEmbed.add_field(
             name="Commands", value="Send '$help' for commands.", inline=True
         )
+        print(str(infoEmbed.fields))
         return infoEmbed
 
     def __getHelpEmbed(self) -> discord.Embed:
