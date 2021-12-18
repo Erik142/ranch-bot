@@ -1,0 +1,7 @@
+version: "3"
+services:
+  ranch-bot:
+    build: .
+    restart: always
+    env_file:
+      - src/ranchbot/.env
