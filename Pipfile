@@ -9,6 +9,7 @@ python-dotenv = "*"
 dpytest = "*"
 pytest-asyncio = "*"
 pytest-cov = "*"
+pika = "*"
 
 [dev-packages]
 pytest = "*"
