@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 from core.bot import Bot
 from core import args
+from messagequeue.consumer import MessageQueue
 from util.log import log
 
 load_dotenv()
@@ -44,6 +45,14 @@ if __name__ == "__main__":
     logger = log.getLogger(__name__)
     logger.debug("Debugging messages are enabled!")
     checkConfigValues()
-    bot = Bot(prefix, status)
-    bot.loadCommands()
-    bot.run(token)
+
+    try:
+        bot = Bot(prefix, status)
+        bot.loadCommands()
+        queueConsumer = MessageQueue(bot)
+        queueConsumer.daemon = True
+        queueConsumer.start()
+        bot.run(token)
+    except (KeyboardInterrupt, SystemExit):
+        logger.warn("KeyboardInterrupt triggered")
+        queueConsumer.close()
