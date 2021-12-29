@@ -10,6 +10,7 @@ dpytest = "*"
 pytest-asyncio = "*"
 pytest-cov = "*"
 pika = "*"
+psycopg = "*"
 
 [dev-packages]
 pytest = "*"

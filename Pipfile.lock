@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fd9f85584ca4d9e8f15cf78fb050ef7082e9541fddfaadc2a8c77ce830e2483f"
+            "sha256": "1561f3c0ebbe89e2d886ffbcc17fa2eb898b7c8995d3376a463dc5217b269eea"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -69,11 +69,11 @@
         },
         "attrs": {
             "hashes": [
-                "sha256:50f3c9b216dc9021042f71b392859a773b904ce1a029077f58f6598272432045",
-                "sha256:8f7335278dedd26b58c38e006338242cc0977f06d51579b2b8b87b9b33bff66c"
+                "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4",
+                "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
-            "version": "==21.3.0"
+            "version": "==21.4.0"
         },
         "chardet": {
             "hashes": [
@@ -272,6 +272,14 @@
             "markers": "python_version >= '3.6'",
             "version": "==1.0.0"
         },
+        "psycopg": {
+            "hashes": [
+                "sha256:54f3bbcb7ece702d0141a1669e4e46e6cd3b0635813fc8ad4887ce085902e354",
+                "sha256:9a0e89937ad08e1e0af6ec97a5030ee02273bd651d4fb682e7d8facd80973fda"
+            ],
+            "index": "pypi",
+            "version": "==3.0.7"
+        },
         "py": {
             "hashes": [
                 "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719",
@@ -425,11 +433,11 @@
     "develop": {
         "attrs": {
             "hashes": [
-                "sha256:50f3c9b216dc9021042f71b392859a773b904ce1a029077f58f6598272432045",
-                "sha256:8f7335278dedd26b58c38e006338242cc0977f06d51579b2b8b87b9b33bff66c"
+                "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4",
+                "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
-            "version": "==21.3.0"
+            "version": "==21.4.0"
         },
         "iniconfig": {
             "hashes": [
