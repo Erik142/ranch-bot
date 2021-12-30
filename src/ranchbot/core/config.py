@@ -12,6 +12,8 @@ status = os.environ.get("STATUS")
 prefix = os.environ.get("PREFIX")
 postgresConnectionString = os.environ.get("POSTGRES_CONNECTION_STRING")
 rabbitmqConnectionString = os.environ.get("RABBITMQ_CONNECTION_STRING")
+publishExchange = os.environ.get("RABBITMQ_PUBLISH_EXCHANGE")
+consumeQueue = os.environ.get("RABBITMQ_CONSUME_QUEUE")
 
 
 class Config:
@@ -20,6 +22,8 @@ class Config:
     __TOKEN = token
     __POSTGRES_CONNECTION_STRING = postgresConnectionString
     __RABBITMQ_CONNECTION_STRING = rabbitmqConnectionString
+    __PUBLISH_EXCHANGE = publishExchange
+    __CONSUME_QUEUE = consumeQueue
 
     __LOGGER = None
 
@@ -64,6 +68,17 @@ class Config:
             )
             return False
 
+        if self.__PUBLISH_EXCHANGE is None or self.__PUBLISH_EXCHANGE == "":
+            self.__LOGGER.critical(
+                "The rabbitmq publish exchange could not be retrieved from environment variables. Please set the RABBITMQ_PUBLISH_EXCHANGE environment variable and try again."
+            )
+            return False
+
+        if self.__CONSUME_QUEUE is None or self.__CONSUME_QUEUE == "":
+            self.__LOGGER.critical(
+                "The rabbitmq consume queue could not be retrieved from environment variables. Please set the RABBITMQ_CONSUME_QUEUE environment variable and try again."
+            )
+            return False
         return True
 
     def getPostgresConnectionString(self) -> str:
@@ -71,6 +86,12 @@ class Config:
 
     def getRabbitMqConnectionString(self) -> str:
         return self.__RABBITMQ_CONNECTION_STRING
+
+    def getPublishExchange(self) -> str:
+        return self.__PUBLISH_EXCHANGE
+
+    def getConsumeQueue(self) -> str:
+        return self.__CONSUME_QUEUE
 
     def getPrefix(self) -> str:
         return self.__PREFIX

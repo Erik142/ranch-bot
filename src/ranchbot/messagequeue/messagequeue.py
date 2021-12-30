@@ -23,6 +23,8 @@ class MessageQueue:
     __BOT = None
     __CONNECTION = None
     __CHANNEL = None
+    __EXCHANGE = None
+    __QUEUE = None
     __URL = None
     __LOGGER = None
     __DATABASE = None
@@ -31,6 +33,8 @@ class MessageQueue:
         super().__init__()
         self.__LOGGER = log.getLogger(__name__)
         config = Config()
+        self.__EXCHANGE = config.getPublishExchange()
+        self.__QUEUE = config.getConsumeQueue()
         self.__DATABASE = PostgresDatabase(config.getPostgresConnectionString())
         self.__URL = connectionString
         self.__BOT = bot
@@ -50,9 +54,7 @@ class MessageQueue:
 
     def __on_channel_open(self, channel):
         self.__CHANNEL = channel
-        self.__CHANNEL.basic_consume(
-            "minecraft-authentication", self.__messageCallback, True
-        )
+        self.__CHANNEL.basic_consume(self.__QUEUE, self.__messageCallback, True)
 
     def __messageCallback(self, ch, method, properties, body):
         loop = asyncio.get_running_loop()
@@ -96,7 +98,7 @@ class MessageQueue:
             currentTime = time.time()
             elapsed = currentTime - startTime
 
-            if elapsed > 15:
+            if elapsed > 60:
                 break
 
             message = await user.fetch_message(message.id)
@@ -135,6 +137,16 @@ class MessageQueue:
                         name="Minecraft login",
                         value="The login request has been approved. You can now join the protected Minecraft servers for the next 30 minutes.",
                     )
+
+                    if "server" in jsonBody:
+                        connectCommand = {
+                            "command": "connect",
+                            "user": minecraftUser,
+                            "server": jsonBody["server"],
+                        }
+                        self.__CHANNEL.basic_publish(
+                            self.__EXCHANGE, "*", json.dumps(connectCommand)
+                        )
                 else:
                     responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
                     responseEmbed.add_field(

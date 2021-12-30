@@ -5,7 +5,7 @@ import logging
 from core.bot import Bot
 from core import args
 from core.config import Config
-from messagequeue.consumer import MessageQueue
+from messagequeue.messagequeue import MessageQueue
 from util.log import log
 
 logger = None

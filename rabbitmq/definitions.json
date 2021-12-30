@@ -10,16 +10,32 @@
     {
       "name": "minecraft",
       "vhost": "/",
-      "type": "fanout",
+      "type": "direct",
       "durable": true,
       "auto_delete": false,
       "internal": false,
       "arguments": {}
-    }
+    },
+    {
+      "name": "minecraft-server",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
   ],
   "queues": [
     {
       "name": "minecraft-authentication",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "minecraft-auto-connect",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -31,6 +47,14 @@
       "source": "minecraft",
       "vhost": "/",
       "destination": "minecraft-authentication",
+      "destination_type": "queue",
+      "routing_key": "*",
+      "arguments": {}
+    },
+    {
+      "source": "minecraft-server",
+      "vhost": "/",
+      "destination": "minecraft-auto-connect",
       "destination_type": "queue",
       "routing_key": "*",
       "arguments": {}
