@@ -21,8 +21,9 @@ from util.embed import embed
 
 class MessageQueue:
     __BOT = None
-    __CONNECTION = None
-    __CHANNEL = None
+    __PUBLISH_CONNECTION = None
+    __CONSUME_CONNECTION = None
+    __PUBLISH_CHANNEL = None
     __EXCHANGE = None
     __QUEUE = None
     __URL = None
@@ -42,19 +43,36 @@ class MessageQueue:
         self.__openConnection()
 
     def __openConnection(self):
-        self.__CONNECTION = AsyncioConnection(
+        self.__PUBLISH_CONNECTION = AsyncioConnection(
             pika.URLParameters(self.__URL),
-            on_open_callback=self.__on_connection_open,
+            on_open_callback=self.__on_publish_connection_open,
         )
-        self.__LOGGER.info("RabbitMQ connection created!")
+        self.__LOGGER.info("RabbitMQ publish connection created!")
 
-    def __on_connection_open(self, _unused_connection):
-        self.__LOGGER.info("RabbitMQ connection open!")
-        self.__CONNECTION.channel(on_open_callback=self.__on_channel_open)
+        self.__CONSUME_CONNECTION = AsyncioConnection(
+            pika.URLParameters(self.__URL),
+            on_open_callback=self.__on_consume_connection_open,
+        )
+        self.__LOGGER.info("RabbitMQ consume connection created!")
 
-    def __on_channel_open(self, channel):
-        self.__CHANNEL = channel
-        self.__CHANNEL.basic_consume(self.__QUEUE, self.__messageCallback, True)
+    def __on_publish_connection_open(self, _unused_connection):
+        self.__LOGGER.info("RabbitMQ publish connection open!")
+        self.__PUBLISH_CONNECTION.channel(
+            on_open_callback=self.__on_publish_channel_open
+        )
+
+    def __on_consume_connection_open(self, _unused_connection):
+        self.__LOGGER.info("RabbitMQ consume connection open!")
+        self.__CONSUME_CONNECTION.channel(
+            on_open_callback=self.__on_consume_channel_open
+        )
+
+    def __on_publish_channel_open(self, channel):
+        self.__PUBLISH_CHANNEL = channel
+
+    def __on_consume_channel_open(self, channel):
+        self.__CONSUME_CHANNEL = channel
+        self.__CONSUME_CHANNEL.basic_consume(self.__QUEUE, self.__messageCallback, True)
 
     def __messageCallback(self, ch, method, properties, body):
         loop = asyncio.get_running_loop()
@@ -144,7 +162,7 @@ class MessageQueue:
                             "user": minecraftUser,
                             "server": jsonBody["server"],
                         }
-                        self.__CHANNEL.basic_publish(
+                        self.__PUBLISH_CHANNEL.basic_publish(
                             self.__EXCHANGE, "*", json.dumps(connectCommand)
                         )
                 else:
@@ -164,6 +182,7 @@ class MessageQueue:
         await user.send(embed=responseEmbed)
 
     def close(self):
-        self.__CONNECTION.close()
-        self.__CONNECTION.close()
-        self.__CONNECTION.ioloop.stop()
+        self.__PUBLISH_CHANNEL.close()
+        self.__PUBLISH_CONNECTION.close()
+        self.__CONSUME_CHANNEL.close()
+        self.__CONSUME_CONNECTION.close()
