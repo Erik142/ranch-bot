@@ -1,3 +1,5 @@
 TOKEN=''
 STATUS=''
 PREFIX=''
+POSTGRES_CONNECTION_STRING='user=postgres'
+RABBITMQ_CONNECTION_STRING='amqp://rabbitmq:rabbitmq@127.0.0.1:5672/%2F'
