@@ -9,3 +9,13 @@ services:
     volumes:
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./database/tables.sql:/docker-entrypoint-initdb.d/tables.sql
+      - ./database/views.sql:/docker-entrypoint-initdb.d/views.sql
