@@ -16,10 +16,10 @@ async def info(ctx):
     """
     Prints basic command information
     """
-    infoEmbed = __getInfoEmbed()
+    infoEmbed = getInfoEmbed()
     await ctx.respond(embed=infoEmbed)
 
-def __getInfoEmbed() -> Embed:
+def getInfoEmbed() -> Embed:
     infoEmbed = embed.getBaseEmbed("info", Color.of(colour.Color("orange").hex))
     infoEmbed.add_field(
         name="Commands", value="Send '$help' for commands.", inline=True
