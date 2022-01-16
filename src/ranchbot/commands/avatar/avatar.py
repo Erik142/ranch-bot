@@ -1,28 +1,34 @@
 #!/usr/bin/env python3
-import discord
-from discord.ext import commands
+import hikari
+import lightbulb
+
+from core.bot import Bot
 from util.embed import embed
 
 
-class Avatar(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.group()
-    async def avatar(self, ctx):
+class Avatar(lightbulb.Plugin):
+    @lightbulb.command("avatar", "Prints the sender's avatar")
+    @lightbulb.implements(lightbulb.PrefixCommandGroup)
+    async def avatar(self, ctx: lightbulb.Context) -> None:
         """
         Prints the sender's avatar
         """
-        if ctx.invoked_subcommand is None:
-            await ctx.send(ctx.author.avatar_url)
+        await ctx.respond(ctx.author.avatar_url)
 
-    @avatar.command()
-    async def user(self, ctx, member: discord.Member):
+    @avatar.child
+    @lightbulb.option("user", "Print this user's avatar", type=hikari.User)
+    @lightbulb.command("user", "Prints the specified user's avatar")
+    @lightbulb.implements(lightbulb.PrefixSubCommand)
+    async def user(self, ctx: lightbulb.Context) -> None:
         """
         Prints the specified user's avatar
         """
-        await ctx.send(member.default_avatar_url)
+        member = ctx.options.user
+        await ctx.respond(member.default_avatar_url)
 
 
-def setup(bot):
-    bot.add_cog(Avatar(bot))
+def load(bot: Bot):
+    bot.add_plugin(Avatar(bot))
+
+def unload(bot: Bot):
+    bot.remove_plugin("Avatar")

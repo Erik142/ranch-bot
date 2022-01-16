@@ -1,24 +1,28 @@
 #!/usr/bin/env python3
-import discord
-from discord.ext import commands
+import colour
+import lightbulb
+
+from hikari import Color
+from hikari.embeds import Embed
+
+from core.bot import Bot
 from util.embed import embed
 
 
-class Help(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command()
-    async def help(self, ctx):
+class Help(lightbulb.Plugin):
+    @lightbulb.command("help2", "Prints basic help for all commands")
+    @lightbulb.implements(lightbulb.PrefixCommand)
+    async def help(self, ctx: lightbulb.Context):
         """
         Prints basic help for all commands
         """
         helpEmbed = self.__getHelpEmbed()
-        await ctx.send(embed=helpEmbed)
+        await ctx.respond(embed=helpEmbed)
 
-    def __getHelpEmbed(self) -> discord.Embed:
-        helpEmbed = embed.getBaseEmbed("", discord.Colour.blue())
+    def __getHelpEmbed(self) -> Embed:
+        helpEmbed = embed.getBaseEmbed("", Color.of(colour.Color("blue").hex))
         helpEmbed.description = "The following commands are available:"
+
 
         for command in self.bot.commands:
             helpEmbed.add_field(
@@ -30,5 +34,8 @@ class Help(commands.Cog):
         return helpEmbed
 
 
-def setup(bot):
-    bot.add_cog(Help(bot))
+def load(bot: Bot):
+    bot.add_plugin(Help(bot))
+
+def unload(bot: Bot):
+    bot.remove_plugin("Help")

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-import discord
+from hikari import Color
+from hikari.embeds import Embed, EmbedAuthor, EmbedFooter
 
-
-def getBaseEmbed(title, colour: discord.Colour) -> discord.Embed:
-    embed = discord.Embed(title=title, colour=colour)
-    embed.set_footer(text="RanchBot")
-    embed.set_author(name="RanchBot")
+def getBaseEmbed(title, colour: Color) -> Embed:
+    embed = Embed(title=title, colour=colour)
+    embed.footer = EmbedFooter(text="RanchBot")
+    embed.author = EmbedAuthor(name="RanchBot")
     return embed

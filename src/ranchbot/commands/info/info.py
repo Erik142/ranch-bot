@@ -1,15 +1,15 @@
-import discord
-from discord.ext import commands
+import colour
+from hikari import Color
+from hikari.embeds import Embed
+import lightbulb
 
 from util.embed import embed
+from core.bot import Bot
 
 
-class Info(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self._last_member = None
-
-    @commands.command()
+class Info(lightbulb.Plugin):
+    @lightbulb.command("info", "Prints basic command information")
+    @lightbulb.implements(lightbulb.PrefixCommand)
     async def info(self, ctx):
         """
         Prints basic command information
@@ -17,13 +17,16 @@ class Info(commands.Cog):
         infoEmbed = self.__getInfoEmbed()
         await ctx.send(embed=infoEmbed)
 
-    def __getInfoEmbed(self) -> discord.Embed:
-        infoEmbed = embed.getBaseEmbed("info", discord.Colour.orange())
+    def __getInfoEmbed(self) -> Embed:
+        infoEmbed = embed.getBaseEmbed("info", Color(colour.Color("orange").hex))
         infoEmbed.add_field(
             name="Commands", value="Send '$help' for commands.", inline=True
         )
         return infoEmbed
 
 
-def setup(bot):
-    bot.add_cog(Info(bot))
+def load(bot: Bot) -> None:
+    bot.add_plugin(Info(bot))
+
+def unload(bot: Bot) -> None:
+    bot.remove_plugin("Info")

@@ -32,7 +32,7 @@ class Bot(lightbulb.BotApp):
         super().__init__(token, prefix)
         self.__status = status
 
-    #        self.__cogs = self.__getCogs()
+        self.__plugins = self.__get_plugins()
 
     def __get_plugins(self) -> list[str]:
         pathSeparator = "/"
@@ -40,14 +40,14 @@ class Bot(lightbulb.BotApp):
             pathSeparator = "\\"
         cogs = list[str]()
         scriptPath = os.path.dirname(os.path.realpath(__file__))
-        cogsPath = os.path.join(scriptPath, "../", self.__cogs_BASE_PATH)
+        cogsPath = os.path.join(scriptPath, "../", self.__COGS_BASE_PATH)
 
         for path in Path(cogsPath).glob(self.__COG_FILE_REGEXP):
             pathStr = str(path)
             if "__init__.py" not in pathStr:
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
-                pathStr = pathStr[pathStr.find(self.__cogs_BASE_PATH) :]
+                pathStr = pathStr[pathStr.find(self.__COGS_BASE_PATH) :]
                 self.__logger.debug(pathStr)
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
@@ -59,7 +59,7 @@ class Bot(lightbulb.BotApp):
         for plugin in self.__plugins:
             try:
                 self.__logger.info(f"Loading cog {plugin}")
-                self.load_extension(plugin)
+                self.load_extensions(plugin)
                 self.__logger.info(f"Loaded cog {plugin}")
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
