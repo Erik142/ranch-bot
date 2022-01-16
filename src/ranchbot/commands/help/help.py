@@ -8,34 +8,40 @@ from hikari.embeds import Embed
 from core.bot import Bot
 from util.embed import embed
 
+class CustomHelp(lightbulb.BaseHelpCommand):
+    async def send_bot_help(self, context):
+        # Override this method to change the message sent when the help command
+        # is run without any arguments.
+        self.bot.user_commands
 
-class Help(lightbulb.Plugin):
-    @lightbulb.command("help2", "Prints basic help for all commands")
-    @lightbulb.implements(lightbulb.PrefixCommand)
-    async def help(self, ctx: lightbulb.Context):
-        """
-        Prints basic help for all commands
-        """
-        helpEmbed = self.__getHelpEmbed()
-        await ctx.respond(embed=helpEmbed)
+    async def send_plugin_help(self, context: lightbulb.Context, plugin: str):
+        # Override this method to change the message sent when the help command
+        # argument is the name of a plugin.
+        ...
 
-    def __getHelpEmbed(self) -> Embed:
-        helpEmbed = embed.getBaseEmbed("", Color.of(colour.Color("blue").hex))
-        helpEmbed.description = "The following commands are available:"
+    async def send_command_help(self, context: lightbulb.Context, command: str):
+        # Override this method to change the message sent when the help command
+        # argument is the name or alias of a command.
+        ...
 
+    async def send_group_help(self, context: lightbulb.Context, group: str):
+        # Override this method to change the message sent when the help command
+        # argument is the name or alias of a command group.
+        ...
 
-        for command in self.bot.commands:
-            helpEmbed.add_field(
-                name=self.bot.command_prefix + command.name,
-                value=command.help,
-                inline=False,
-            )
-
-        return helpEmbed
+    async def object_not_found(self, context: lightbulb.Context, obj: str):
+        # Override this method to change the message sent when help is
+        # requested for an object that does not exist
+        ...
 
 
 def load(bot: Bot):
-    bot.add_plugin(Help(bot))
+    """
+    TODO: Load this help command instead of the standard one
+    """
+#    bot.add_plugin(Help(bot))
+    pass
 
 def unload(bot: Bot):
-    bot.remove_plugin("Help")
+#    bot.remove_plugin("Help")
+    pass

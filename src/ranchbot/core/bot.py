@@ -10,9 +10,6 @@ import lightbulb
 
 from util.log import log
 
-bot = lightbulb.BotApp(token="")
-
-
 class Bot(lightbulb.BotApp):
 
     __COGS_BASE_PATH = "commands"
@@ -29,7 +26,7 @@ class Bot(lightbulb.BotApp):
             import uvloop
 
             uvloop.install()
-        super().__init__(token, prefix)
+        super().__init__(token, prefix, force_color=True)
         self.__status = status
 
         self.__plugins = self.__get_plugins()
@@ -60,7 +57,6 @@ class Bot(lightbulb.BotApp):
             try:
                 self.__logger.info(f"Loading cog {plugin}")
                 self.load_extensions(plugin)
-                self.__logger.info(f"Loaded cog {plugin}")
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
                 self.__logger.error("Failed to load cog {}\n{}".format(plugin, exc))

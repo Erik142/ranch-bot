@@ -45,5 +45,4 @@ if __name__ == "__main__":
     logger.debug("Debugging messages are enabled!")
     checkConfigValues()
     bot = Bot(token,prefix, status)
-    #bot.loadCommands()
     bot.run()

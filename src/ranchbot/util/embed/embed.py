@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 from hikari import Color
-from hikari.embeds import Embed, EmbedAuthor, EmbedFooter
+from hikari.embeds import Embed
 
 def getBaseEmbed(title, colour: Color) -> Embed:
     embed = Embed(title=title, colour=colour)
-    embed.footer = EmbedFooter(text="RanchBot")
-    embed.author = EmbedAuthor(name="RanchBot")
+    embed.set_footer(text="RanchBot")
+    embed.set_author(name="RanchBot")
     return embed
