@@ -9,6 +9,7 @@ pytest-asyncio = "*"
 pytest-cov = "*"
 hikari = "~=2.0.0.dev104"
 hikari-lightbulb = "*"
+uvloop = "*"
 
 [dev-packages]
 pytest = "*"
