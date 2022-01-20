@@ -2,12 +2,18 @@ FROM python:latest
 
 WORKDIR /usr/src/app
 
-COPY ./Pipfile ./Pipfile
-COPY ./Pipfile.lock ./Pipfile.lock
+COPY ./poetry.lock ./poetry.lock
+COPY ./pyproject.toml ./pyproject.toml
+COPY ./Makefile ./Makefile
 
-RUN pip install pipenv
-RUN pipenv install --system
+#RUN pip install pipenv
+#RUN pipenv install --system
 
-COPY ./src ./src
+COPY ./src/dpytest ./src/dpytest
 
-CMD ["python", "./src/ranchbot/main.py"]
+RUN make environment
+
+COPY ./src/ranchbot ./src/ranchbot
+COPY ./src/main.py ./src/main.py
+
+CMD ["python3", "-m", "poetry", "run", "python", "./src/main.py"]

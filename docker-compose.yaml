@@ -4,4 +4,4 @@ services:
     build: .
     restart: always
     env_file:
-      - src/ranchbot/.env
+      - src/.env
