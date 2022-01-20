@@ -114,21 +114,6 @@ tomli = {version = "*", optional = true, markers = "extra == \"toml\""}
 toml = ["tomli"]
 
 [[package]]
-name = "discord.py"
-version = "1.7.3"
-description = "A Python wrapper for the Discord API"
-category = "main"
-optional = false
-python-versions = ">=3.5.3"
-
-[package.dependencies]
-aiohttp = ">=3.6.0,<3.8.0"
-
-[package.extras]
-docs = ["sphinx (==3.0.3)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport"]
-voice = ["PyNaCl (>=1.3.0,<1.5)"]
-
-[[package]]
 name = "frozenlist"
 version = "1.2.0"
 description = "A list-like structure which implements collections.abc.MutableSequence"
@@ -198,6 +183,21 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
+name = "py-cord"
+version = "1.7.3"
+description = "A Python wrapper for the Discord API"
+category = "main"
+optional = false
+python-versions = ">=3.5.3"
+
+[package.dependencies]
+aiohttp = ">=3.6.0,<3.8.0"
+
+[package.extras]
+docs = ["sphinx (==3.0.3)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport"]
+voice = ["PyNaCl (>=1.3.0,<1.5)"]
 
 [[package]]
 name = "pyparsing"
@@ -310,7 +310,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "e7995115e5436fd74aa2658f3a7f62ded4f0714bd560d7dcd57390756a53b71d"
+content-hash = "980b6247ab7293ba7a081685c63c60eb806f5df854c366f9afa5c5bc8f2d4eca"
 
 [metadata.files]
 aiohttp = [
@@ -432,10 +432,6 @@ coverage = [
     {file = "coverage-6.2-cp39-cp39-win_amd64.whl", hash = "sha256:86f2e78b1eff847609b1ca8050c9e1fa3bd44ce755b2ec30e70f2d3ba3844644"},
     {file = "coverage-6.2-pp36.pp37.pp38-none-any.whl", hash = "sha256:5829192582c0ec8ca4a2532407bc14c2f338d9878a10442f5d03804a95fac9de"},
     {file = "coverage-6.2.tar.gz", hash = "sha256:e2cad8093172b7d1595b4ad66f24270808658e11acf43a8f95b41276162eb5b8"},
-]
-"discord.py" = [
-    {file = "discord.py-1.7.3-py3-none-any.whl", hash = "sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c"},
-    {file = "discord.py-1.7.3.tar.gz", hash = "sha256:462cd0fe307aef8b29cbfa8dd613e548ae4b2cb581d46da9ac0d46fb6ea19408"},
 ]
 frozenlist = [
     {file = "frozenlist-1.2.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:977a1438d0e0d96573fd679d291a1542097ea9f4918a8b6494b06610dfeefbf9"},
@@ -607,6 +603,10 @@ pure25519 = [
 py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
+]
+py-cord = [
+    {file = "py-cord-1.7.3.tar.gz", hash = "sha256:b319b0c282e6cd55fedf11efefe30f024fc9293fee3b3e2b715777be6d9fb1ae"},
+    {file = "py_cord-1.7.3-py3-none-any.whl", hash = "sha256:19cb49ee6cb830d71e8b5d9555249cef5c15c652c096176e69edce5ff993701b"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.6-py3-none-any.whl", hash = "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4"},
