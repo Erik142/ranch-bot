@@ -4,9 +4,9 @@ import logging
 
 from dotenv import load_dotenv
 
-from core.bot import Bot
-from core import args
-from util.log import log
+from ranchbot.core.bot import Bot
+from ranchbot.core import args
+from ranchbot.util.log import log
 
 load_dotenv()
 

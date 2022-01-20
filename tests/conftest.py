@@ -2,7 +2,7 @@
 
 import pytest
 import discord.ext.test as dpytest
-from core.bot import Bot
+from ranchbot.core.bot import Bot
 
 
 @pytest.fixture
