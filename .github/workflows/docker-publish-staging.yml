@@ -1,0 +1,43 @@
+# This workflow will build a container image and publish it to a private
+# container registry.
+
+name: Publish staging container image in registry
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9+].[0-9]+-[0-9]+'
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Get tag
+      uses: dawidd6/action-get-tag@v1
+      with:
+        strip_v: true
+      id: tag
+    - name: Login to private Docker registry
+      uses: docker/login-action@v1
+      with:
+        # Server address of Docker registry. If not set then will default to Docker Hub
+        registry: harbor.wahlberger.dev
+        # Username used to log against the Docker registry
+        username: ${{ secrets.REGISTRY_USER }}
+        # Password or personal access token used to log against the Docker registry
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        # Log out from the Docker registry at the end of a job
+        logout: true
+    - name: Build Ranch bot container image
+      run: docker build . -t harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }}
+    - name: Tag Docker images with "latest" tag
+      run: |
+        docker image tag harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }} harbor.wahlberger.dev/ranch/ranch-bot-staging:latest
+    - name: Push Docker images to registry
+      run: |
+        docker push harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }}
+        docker push harbor.wahlberger.dev/ranch/ranch-bot-staging:latest
