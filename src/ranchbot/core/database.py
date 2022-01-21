@@ -9,14 +9,14 @@ class PostgresDatabase:
         super().__init__()
         self.__CONNECTION_STRING = connectionString
 
-    def addPlayer(self, discordName, minecraftName):
+    def add_player(self, discordName, minecraftName):
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
                     "INSERT INTO Players VALUES(%s,%s)", (discordName, minecraftName)
                 )
 
-    def addPlayerAuthentication(self, discordName):
+    def add_player_auth(self, discordName):
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
@@ -24,7 +24,7 @@ class PostgresDatabase:
                     [discordName],
                 )
 
-    def getAuthenticatedPlayers(self) -> list[str]:
+    def get_authenticated_players(self) -> list[str]:
         authenticatedPlayers = list(str)
 
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
@@ -36,7 +36,7 @@ class PostgresDatabase:
 
         return authenticatedPlayers
 
-    def isPlayerAuthenticated(self, discordId) -> bool:
+    def is_player_authenticated(self, discordId) -> bool:
         count = 0
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
@@ -47,7 +47,7 @@ class PostgresDatabase:
 
         return count > 0
 
-    def deletePlayerAuthentication(self, discordName):
+    def delete_player_auth(self, discordName):
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
@@ -55,7 +55,7 @@ class PostgresDatabase:
                     [discordName],
                 )
 
-    def getPlayers(self) -> list[str]:
+    def get_players(self) -> list[str]:
         players = list(str)
 
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
@@ -65,7 +65,7 @@ class PostgresDatabase:
 
         return players
 
-    def getMinecraftUser(self, discordName) -> str:
+    def get_minecraft_user(self, discordName) -> str:
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 minecraftUser = cursor.execute(
@@ -77,7 +77,7 @@ class PostgresDatabase:
 
         return ""
 
-    def getDiscordId(self, minecraftName) -> str:
+    def get_discord_id(self, minecraftName) -> str:
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 discordId = cursor.execute(
@@ -89,7 +89,7 @@ class PostgresDatabase:
 
         return ""
 
-    def isPlayerRegistered(self, discordName) -> bool:
+    def is_player_registered(self, discordName) -> bool:
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 playerCount = cursor.execute(
@@ -97,7 +97,7 @@ class PostgresDatabase:
                 ).fetchone()[0]
                 return playerCount > 0
 
-    def deletePlayer(self, discordName):
+    def delete_player(self, discordName):
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(

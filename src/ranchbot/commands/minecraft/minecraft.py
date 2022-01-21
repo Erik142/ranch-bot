@@ -3,10 +3,10 @@
 import discord
 from discord.ext import commands
 
-from core.config import Config
-from core.database import PostgresDatabase
-from util.embed import embed
-from util.log import log
+from ranchbot.core.config import Config
+from ranchbot.core.database import PostgresDatabase
+from ranchbot.util.embed import embed
+from ranchbot.util.log import log
 
 
 class Minecraft(commands.Cog):
@@ -31,7 +31,7 @@ class Minecraft(commands.Cog):
         """
         userId = str(ctx.author.id)
 
-        if self.__DATABASE.isPlayerRegistered(userId):
+        if self.__DATABASE.is_player_registered(userId):
             failEmbed = embed.getBaseEmbed("", discord.Colour.red())
             failEmbed.add_field(
                 name="Minecraft registration",
@@ -40,7 +40,7 @@ class Minecraft(commands.Cog):
             await ctx.send(embed=failEmbed)
             return
 
-        self.__DATABASE.addPlayer(userId, minecraftUser)
+        self.__DATABASE.add_player(userId, minecraftUser)
 
         registerEmbed = embed.getBaseEmbed("", discord.Colour.blue())
         registerEmbed.add_field(
@@ -59,7 +59,7 @@ class Minecraft(commands.Cog):
         """
         userId = str(ctx.author.id)
 
-        if self.__DATABASE.isPlayerRegistered(userId) == False:
+        if self.__DATABASE.is_player_registered(userId) == False:
             failEmbed = embed.getBaseEmbed("", discord.Colour.red())
             failEmbed.add_field(
                 name="Minecraft registration",
@@ -68,8 +68,8 @@ class Minecraft(commands.Cog):
             await ctx.send(embed=failEmbed)
             return
 
-        minecraftUser = self.__DATABASE.getMinecraftUser(userId)
-        self.__DATABASE.deletePlayer(userId)
+        minecraftUser = self.__DATABASE.get_minecraft_user(userId)
+        self.__DATABASE.delete_player(userId)
 
         unregisterEmbed = embed.getBaseEmbed("", discord.Colour.blue())
         unregisterEmbed.add_field(

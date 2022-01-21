@@ -9,14 +9,14 @@ from pika.adapters.asyncio_connection import AsyncioConnection
 
 import asyncio
 
-from core.config import Config
-from core.database import PostgresDatabase
+from ranchbot.core.config import Config
+from ranchbot.core.database import PostgresDatabase
 
 import discord
 from discord.ext import commands
 
-from util.log import log
-from util.embed import embed
+from ranchbot.util.log import log
+from ranchbot.util.embed import embed
 
 
 class MessageQueue:
@@ -89,7 +89,7 @@ class MessageQueue:
             return
 
         minecraftUser = jsonBody["user"]
-        discordId = self.__DATABASE.getDiscordId(minecraftUser)
+        discordId = self.__DATABASE.get_discord_id(minecraftUser)
         self.__LOGGER.info("The user's Discord id is: " + discordId)
 
         # TODO: Send message to user to log them in
@@ -147,9 +147,9 @@ class MessageQueue:
         else:
             self.__LOGGER.info("The user responded with " + str(reaction.emoji))
             if str(reaction.emoji) == "✅":
-                if self.__DATABASE.isPlayerAuthenticated(str(user.id)) == False:
-                    self.__DATABASE.deletePlayerAuthentication(str(user.id))
-                    self.__DATABASE.addPlayerAuthentication(str(user.id))
+                if self.__DATABASE.is_player_authenticated(str(user.id)) == False:
+                    self.__DATABASE.delete_player_auth(str(user.id))
+                    self.__DATABASE.add_player_auth(str(user.id))
                     responseEmbed = embed.getBaseEmbed("", discord.Colour.green())
                     responseEmbed.add_field(
                         name="Minecraft login",
