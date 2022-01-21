@@ -3,7 +3,7 @@
 from dotenv import load_dotenv
 
 import os
-from util.log import log
+from ranchbot.util.log import log
 
 load_dotenv()
 

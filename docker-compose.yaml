@@ -22,6 +22,6 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./database/tables.sql:/docker-entrypoint-initdb.d/tables.sql
-      - ./database/views.sql:/docker-entrypoint-initdb.d/views.sql
-      - ./database/triggers.sql:/docker-entrypoint-initdb.d/triggers.sql
+      - ./database/tables.sql:/docker-entrypoint-initdb.d/1-tables.sql
+      - ./database/views.sql:/docker-entrypoint-initdb.d/2-views.sql
+      - ./database/triggers.sql:/docker-entrypoint-initdb.d/3-triggers.sql

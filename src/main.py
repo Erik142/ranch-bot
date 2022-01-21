@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 import logging
@@ -7,6 +8,7 @@ from dotenv import load_dotenv
 from ranchbot.core.bot import Bot
 from ranchbot.core import args
 from ranchbot.core.config import Config
+from ranchbot.core.database import PostgresDatabase
 from ranchbot.messagequeue.messagequeue import MessageQueue
 from ranchbot.util.log import log
 
@@ -26,8 +28,11 @@ if __name__ == "__main__":
     try:
         bot = Bot(config.getPrefix(), config.getStatus())
         bot.loadCommands()
-        queueConsumer = MessageQueue(config.getRabbitMqConnectionString(), bot)
+        database = PostgresDatabase(config.getPostgresConnectionString())
+        loop = asyncio.get_event_loop()
+        loop.create_task(database.listen(bot))
+        # queueConsumer = MessageQueue(config.getRabbitMqConnectionString(), bot)
         bot.run(config.getToken())
     except (KeyboardInterrupt, SystemExit):
         logger.warn("KeyboardInterrupt triggered")
-        queueConsumer.close()
+        # queueConsumer.close()
