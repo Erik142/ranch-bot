@@ -20,4 +20,11 @@ poetry:
 .PHONY: environment
 environment: poetry deps
 
+.PHONY: devversion
+devversion:
+	./bump_version.sh dev
+
+.PHONY: patchversion
+patchversion:
+	./bump_version.sh patch
 # end
