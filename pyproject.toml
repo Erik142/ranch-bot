@@ -26,9 +26,9 @@ pytest = "^6.2.5"
 python-dotenv = "^0.19.2"
 tomli = "^2.0.0"
 yarl = "^1.7.2"
-py-cord = "^1.7.3"
 psycopg = "^3.0.8"
 pika = "^1.2.0"
+py-cord = {git = "https://github.com/Pycord-Development/pycord.git"}
 
 [tool.poetry.dev-dependencies]
 
