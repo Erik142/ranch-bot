@@ -7,12 +7,13 @@ from asyncio import AbstractEventLoop
 import discord
 from discord.ext import commands
 
-from util.log import log
+from ranchbot.util.log import log
 
 
 class Bot(commands.Bot):
 
     __COGS_BASE_PATH = "commands"
+    __MODULE_PREFIX = "ranchbot"
     __COG_FILE_REGEXP = "**/*.py"
 
     __STATUS = ""
@@ -56,7 +57,7 @@ class Bot(commands.Bot):
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
                 pathStr = str.replace(pathStr, pathSeparator, ".")
-                cogs.append(pathStr)
+                cogs.append(self.__MODULE_PREFIX + "." + pathStr)
         return cogs
 
     def loadCommands(self):

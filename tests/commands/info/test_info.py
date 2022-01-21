@@ -3,7 +3,7 @@
 import asyncio
 import pytest
 
-from commands.info.info import Info
+from ranchbot.commands.info.info import Info
 import discord.ext.test as dpytest
 from discord.embeds import EmbedProxy
 

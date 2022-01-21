@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import discord
 from discord.ext import commands
-from util.embed import embed
+from ranchbot.util.embed import embed
 
 
 class Help(commands.Cog):
