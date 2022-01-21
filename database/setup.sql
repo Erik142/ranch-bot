@@ -14,5 +14,6 @@ GRANT ALL ON SCHEMA public TO postgres;
 -- Note that these are not SQL statements but rather Postgres commands (no terminating ;). 
 \ir tables.sql
 \ir views.sql
+\ir triggers.sql
 --\ir tests.sql
 
