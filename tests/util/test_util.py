@@ -1,5 +1,5 @@
 import discord
-from util.embed import embed
+from ranchbot.util.embed import embed
 
 
 def test_baseEmbed():

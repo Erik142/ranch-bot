@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from util.embed import embed
+from ranchbot.util.embed import embed
 
 
 class Info(commands.Cog):

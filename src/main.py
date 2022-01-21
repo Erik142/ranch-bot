@@ -2,11 +2,13 @@ import os
 import sys
 import logging
 
-from core.bot import Bot
-from core import args
-from core.config import Config
-from messagequeue.messagequeue import MessageQueue
-from util.log import log
+from dotenv import load_dotenv
+
+from ranchbot.core.bot import Bot
+from ranchbot.core import args
+from ranchbot.core.config import Config
+from ranchbot.messagequeue.messagequeue import MessageQueue
+from ranchbot.util.log import log
 
 logger = None
 

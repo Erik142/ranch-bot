@@ -4,7 +4,7 @@ services:
     build: .
     restart: always
     env_file:
-      - src/ranchbot/.env
+      - src/.env
   rabbitmq:
     image: rabbitmq:3-management
     restart: always
