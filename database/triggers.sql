@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION NotifyBot()
 CREATE OR REPLACE FUNCTION NotifyMinecraft()
     RETURNS trigger AS $$
     BEGIN
+        PERFORM pg_notify(CAST('approved_auths' AS TEXT), CAST(NEW.id AS TEXT))
         RETURN OLD;
     END;
     $$ LANGUAGE plpgsql;
