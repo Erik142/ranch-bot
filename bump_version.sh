@@ -1,19 +1,42 @@
 #!/bin/bash
 OLD_VERSION=$(python3 -m poetry version -s)
+OLD_VERSION_PREFIX=${OLD_VERSION%-*}
 case $1 in 
     dev)
-    OLD_VERSION_PREFIX=${OLD_VERSION%-*}
     SUFFIX=$(date -u +%s)
+    
+    if [[ "$OLD_VERSION" == "$OLD_VERSION_PREFIX" ]]
+    then
+        python3 -m poetry version patch
+        OLD_VERSION=$(python3 -m poetry version -s)
+        OLD_VERSION_PREFIX=${OLD_VERSION%-*}
+    fi
+
     python3 -m poetry version "$OLD_VERSION_PREFIX-$SUFFIX"
     ;;
     patch)
-    python3 -m poetry version patch
+    if [[ "$OLD_VERSION" != "$OLD_VERSION_PREFIX" ]]
+    then
+        python3 -m poetry version "$OLD_VERSION_PREFIX"
+    else
+        python3 -m poetry version patch
+    fi
     ;;
     minor)
-    python3 -m poetry version minor
+    if [[ "$OLD_VERSION" != "$OLD_VERSION_PREFIX" ]]
+    then
+        python3 -m poetry version "$OLD_VERSION_PREFIX"
+    else
+        python3 -m poetry version minor
+    fi
     ;;
     major)
-    python3 -m poetry version major
+    if [[ "$OLD_VERSION" != "$OLD_VERSION_PREFIX" ]]
+    then
+        python3 -m poetry version "$OLD_VERSION_PREFIX"
+    else
+        python3 -m poetry version major
+    fi
     ;;
 esac
 
