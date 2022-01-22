@@ -6,7 +6,7 @@ name: Publish staging container image in registry
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9+].[0-9]+-[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-[0-9]+'
 jobs:
   publish:
     name: publish
