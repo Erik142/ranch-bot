@@ -10,8 +10,7 @@ from discord.ext import commands
 from ranchbot.util.log import log
 
 
-class Bot(commands.Bot):
-
+class Bot(discord.Bot):
     __COGS_BASE_PATH = "commands"
     __MODULE_PREFIX = "ranchbot"
     __COG_FILE_REGEXP = "**/*.py"
@@ -22,7 +21,7 @@ class Bot(commands.Bot):
     def __init__(self, prefix: str, status: str, eventLoop: AbstractEventLoop = None):
         intents = discord.Intents.default()
 
-        if eventLoop == None:
+        if eventLoop != None:
             super().__init__(
                 command_prefix=prefix,
                 help_command=None,

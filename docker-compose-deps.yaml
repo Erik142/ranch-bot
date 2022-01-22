@@ -1,10 +1,5 @@
 version: "3"
 services:
-  ranch-bot:
-    build: .
-    restart: always
-    env_file:
-      - src/.env
   rabbitmq:
     image: rabbitmq:3-management
     restart: always

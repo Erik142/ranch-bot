@@ -1,13 +1,12 @@
 # This workflow will build a container image and publish it to a private
 # container registry.
 
-name: Publish container image in registry
+name: Publish staging container image in registry
 
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9+].[0-9]+'
-
+      - 'v[0-9]+.[0-9+].[0-9]+-[0-9]+'
 jobs:
   publish:
     name: publish
@@ -34,11 +33,11 @@ jobs:
         # Log out from the Docker registry at the end of a job
         logout: true
     - name: Build Ranch bot container image
-      run: docker build . -t harbor.wahlberger.dev/ranch/ranch-bot:${{ steps.tag.outputs.tag }}
+      run: docker build . -t harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }}
     - name: Tag Docker images with "latest" tag
       run: |
-        docker image tag harbor.wahlberger.dev/ranch/ranch-bot:${{ steps.tag.outputs.tag }} harbor.wahlberger.dev/ranch/ranch-bot:latest
+        docker image tag harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }} harbor.wahlberger.dev/ranch/ranch-bot-staging:latest
     - name: Push Docker images to registry
       run: |
-        docker push harbor.wahlberger.dev/ranch/ranch-bot:${{ steps.tag.outputs.tag }}
-        docker push harbor.wahlberger.dev/ranch/ranch-bot:latest
+        docker push harbor.wahlberger.dev/ranch/ranch-bot-staging:${{ steps.tag.outputs.tag }}
+        docker push harbor.wahlberger.dev/ranch/ranch-bot-staging:latest
