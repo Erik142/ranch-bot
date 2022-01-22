@@ -13,8 +13,9 @@ on:
 
 jobs:
   # This workflow contains a single job called "install-test"
-  install-test:
+  bump-version:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'Bump version from')"
 
     steps:
       - uses: actions/checkout@v2
