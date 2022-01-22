@@ -4,6 +4,7 @@
 name: Publish staging container image in registry
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+-[0-9]+'

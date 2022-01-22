@@ -36,3 +36,5 @@ jobs:
         run: make devversion
       - name: Push to GitHub
         run: git push
+      - name: Push tags to GitHub
+        run: git push --tags
