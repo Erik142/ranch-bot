@@ -21,7 +21,7 @@ class Minecraft(commands.Cog):
         config = Config()
         self.__DATABASE = PostgresDatabase(config.getPostgresConnectionString())
 
-    @slash_command(name="register", guild_ids=[915329886988664862])
+    @slash_command(name="register")
     async def register(self, ctx):
         """
         Registers the user's Discord account for with the Minecraft server
@@ -85,7 +85,7 @@ class Minecraft(commands.Cog):
             except Exception as e1:
                 self.__LOGGER.error("An error occured while sending an error message to the user with Discord ID %s: %s", userId, e1)
 
-    @slash_command(name="unregister", guild_ids=[915329886988664862])
+    @slash_command(name="unregister")
     async def unregister(self, ctx):
         """
         Unregisters the current Discord user from the Minecraft server, if already registered
