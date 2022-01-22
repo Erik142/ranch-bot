@@ -31,12 +31,12 @@ class PostgresDatabase:
                     "INSERT INTO Players(discordName, registrationCode) VALUES(%s,%s)", (discord_id, reg_code)
                 )
 
-    def add_player_auth(self, discordName):
+    def add_player_auth(self, discordName, authRequestId):
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO PlayerAuthentications(discordName) VALUES(%s)",
-                    [discordName],
+                    "INSERT INTO PlayerAuthentications(discordName, authRequestId) VALUES(%s, %s)",
+                    [discordName, authRequestId],
                 )
 
     def get_authenticated_players(self) -> list[str]:
@@ -231,7 +231,8 @@ class PostgresDatabase:
             self.__LOGGER.error("The Discord ID for the minecraft user with username %s could not be found in PostgreSQL")
             return
 
-        user = await self.__BOT.fetch_user(int(discordId))
+        future = asyncio.run_coroutine_threadsafe(self.__BOT.fetch_user(int(discordId)), self.__BOT.loop)
+        user = future.result()
 
         loginEmbed = embed.getBaseEmbed("", discord.Colour.blue())
         loginEmbed.add_field(
@@ -241,9 +242,10 @@ class PostgresDatabase:
             + " tried to login on the Discord server. Was it you?",
         )
 
-        message = await user.send(embed=loginEmbed)
-        await message.add_reaction("✅")
-        await message.add_reaction("❌")
+        future = asyncio.run_coroutine_threadsafe(user.send(embed=loginEmbed), self.__BOT.loop)
+        message = future.result()
+        asyncio.run_coroutine_threadsafe(message.add_reaction("✅"), self.__BOT.loop)
+        asyncio.run_coroutine_threadsafe(message.add_reaction("❌"), self.__BOT.loop)
 
         responseEmbed = None
         reaction = None
@@ -257,7 +259,8 @@ class PostgresDatabase:
             if elapsed > 60:
                 break
 
-            message = await user.fetch_message(message.id)
+            future = asyncio.run_coroutine_threadsafe(user.fetch_message(message.id), self.__BOT.loop)
+            message = future.result()
 
             for r in message.reactions:
                 if r.count == 2:
@@ -286,9 +289,9 @@ class PostgresDatabase:
             self.__LOGGER.info("The user responded with " + str(reaction.emoji))
             if str(reaction.emoji) == "✅":
                 try:
-                    if self.__DATABASE.is_player_authenticated(str(user.id)) == False:
-                        self.__DATABASE.delete_player_auth(str(user.id))
-                        self.__DATABASE.add_player_auth(str(user.id), id)
+                    if self.is_player_authenticated(str(user.id)) == False:
+                        self.delete_player_auth(str(user.id))
+                        self.add_player_auth(str(user.id), id)
                         responseEmbed = embed.getBaseEmbed("", discord.Colour.green())
                         responseEmbed.add_field(
                             name="Minecraft login",
@@ -308,7 +311,7 @@ class PostgresDatabase:
                         value="An error occured while logging you in. Please try again or contact one of the moderators if the issue persists."
                     )
                     try:
-                        await user.send(embed=errorEmbed)
+                        asyncio.run_coroutine_threadsafe(user.send(embed=errorEmbed), self.__BOT.loop)
                     except Exception as e1:
                         self.__LOGGER.error("Could not send login error message back to the Discord user: %s", e1)
                     return
@@ -319,4 +322,4 @@ class PostgresDatabase:
                     value="The login request has been denied. Contact the Discord moderators if you keep receiving login requests from the Minecraft server.",
                 )
 
-        await user.send(embed=responseEmbed)
+        asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT.loop)
