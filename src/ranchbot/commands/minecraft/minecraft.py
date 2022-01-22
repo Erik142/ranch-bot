@@ -36,9 +36,9 @@ class Minecraft(commands.Cog):
                     reg_code = self.__DATABASE.get_reg_code(userId)
                     failEmbed.add_field(
                         name="Minecraft registration",
-                        value="You have a pending registration status. To complete the registration process, please open Minecraft, connect to The Ranch's Minecraft server, and finally enter the command /register "
+                        value="You have a pending registration status. To complete the registration process, please open Minecraft, connect to The Ranch's Minecraft server, and finally enter the command \n\n```\n/register "
                          + reg_code 
-                         + " to link your Minecraft user to your Discord user.")
+                         + " \n```\n\nto link your Minecraft user to your Discord user.")
                 else:
                     failEmbed.add_field(
                         name="Minecraft registration",
@@ -67,9 +67,9 @@ class Minecraft(commands.Cog):
             registerEmbed = embed.getBaseEmbed("", discord.Colour.blue())
             registerEmbed.add_field(
                 name="Minecraft registration",
-                value="Finish the registration by opening Minecraft, then connect to The Ranch's Minecraft server. Finally enter the command /register "
+                value="Finish the registration by opening Minecraft, then connect to The Ranch's Minecraft server. Finally enter the command \n\n```\n/register "
                 + reg_code
-                + " to link the Minecraft user to your Discord account.",
+                + " \n```\n\nto link the Minecraft user to your Discord account.",
             )
             
             await ctx.respond(embed=registerEmbed, ephemeral=True)
