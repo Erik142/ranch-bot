@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ranch-bot"
-version = "0.1.1-1642861159"
+version = "0.1.1"
 description = ""
 authors = ["Erik Wahlberger <ewahlberger@gmail.com>"]
 
