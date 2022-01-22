@@ -27,4 +27,7 @@ devversion:
 .PHONY: patchversion
 patchversion:
 	./bump_version.sh patch
+
+staging:
+	./build_publish_staging.sh
 # end
