@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 from ranchbot.util.log import log
+import ranchbot.core.version as version
 
 
 class Bot(discord.Bot):
@@ -72,5 +73,5 @@ class Bot(discord.Bot):
     async def on_ready(self):
         self.__LOGGER.info("Bot is ready!")
         await self.change_presence(
-            status=discord.Status.online, activity=discord.Game(self.__STATUS)
+            status=discord.Status.online, activity=discord.Game("version " + version.__version__)
         )
