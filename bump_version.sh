@@ -8,11 +8,14 @@ case $1 in
     if [[ "$OLD_VERSION" == "$OLD_VERSION_PREFIX" ]]
     then
         python3 -m poetry version patch
-        OLD_VERSION=$(python3 -m poetry version -s)
-        OLD_VERSION_PREFIX=${OLD_VERSION%-*}
+        TEMP_VERSION=$(python3 -m poetry version -s)
+        TEMP_VERSION_PREFIX=${TEMP_VERSION%-*}
+        NEW_VERSION="$TEMP_VERSION_PREFIX-$SUFFIX"
+    else
+        NEW_VERSION="$OLD_VERSION_PREFIX-$SUFFIX"
     fi
 
-    python3 -m poetry version "$OLD_VERSION_PREFIX-$SUFFIX"
+    python3 -m poetry version "$NEW_VERSION"
     ;;
     patch)
     if [[ "$OLD_VERSION" != "$OLD_VERSION_PREFIX" ]]
