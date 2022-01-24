@@ -261,7 +261,7 @@ class PostgresDatabase:
         asyncio.run_coroutine_threadsafe(message.add_reaction("✅"), self.__BOT.loop)
         asyncio.run_coroutine_threadsafe(message.add_reaction("❌"), self.__BOT.loop)
 
-        responseEmbed = None
+        responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
         reaction = None
 
         startTime = time.time()
@@ -336,4 +336,9 @@ class PostgresDatabase:
                     value="The login request has been denied. Contact the Discord moderators if you keep receiving login requests from the Minecraft server.",
                 )
 
-        asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT.loop)
+        final_message = future.result()
+
+        time.sleep(60000)
+        asyncio.run_coroutine_threadsafe(final_message.delete(), self.__BOT.loop)
+        asyncio.run_coroutine_threadsafe(message.delete(), self.__BOT.loop)
