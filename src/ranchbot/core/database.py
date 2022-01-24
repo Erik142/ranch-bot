@@ -53,13 +53,13 @@ class PostgresDatabase:
             self.__LOGGER.error("An error occured while retrieving authenticated players from PostgreSQL: %s", e)
         return authenticatedPlayers
 
-    def is_player_authenticated(self, discordId) -> bool:
+    def is_player_authenticated(self, discordId, ip_address) -> bool:
         count = 0
         with psycopg.connect(self.__CONNECTION_STRING) as conn:
             with conn.cursor() as cursor:
                 count = cursor.execute(
-                    "SELECT COUNT(*) FROM AuthenticatedPlayers WHERE discordName=%s",
-                    [discordId],
+                    "SELECT COUNT(*) FROM AuthenticatedPlayers INNER JOIN AuthenticationRequests ON (AuthenticatedPlayers.authRequestId=AuthenticationRequests.id) WHERE AuthenticatedPlayers.discordName=%s AND AuthenticationRequests.ipAddress=%s",
+                    [discordId, ip_address],
                 ).fetchone()[0]
 
         return count > 0
@@ -157,6 +157,19 @@ class PostgresDatabase:
             self.__LOGGER.error("An error occured while retrieving the Minecraft user name for the authentication request with id %s: %s", id, e)
             return ""
 
+    def get_auth_request_ip(self, id) -> str:
+        try:
+            with psycopg.connect(self.__CONNECTION_STRING) as conn:
+                with conn.cursor() as cursor:
+                    minecraftName = cursor.execute(
+                        "SELECT ipAddress FROM AuthenticationRequests WHERE id=%s", [id]
+                    ).fetchone()[0]
+                    return minecraftName
+        except Exception as e:
+            self.__LOGGER.error("An error occured while retrieving the Minecraft user name for the authentication request with id %s: %s", id, e)
+            return ""
+
+
     def get_auth_request_server(self, id: int):
         try:
             with psycopg.connect(self.__CONNECTION_STRING) as conn:
@@ -218,6 +231,7 @@ class PostgresDatabase:
     async def _handle_notification(self, id: int):
         self.__LOGGER.info("Starting notification handler for notification with id " + id)
         minecraftUser = self.get_auth_request_user(id)
+        ip_address = self.get_auth_request_ip(id)
 
         # Not a valid authentication request id
         if minecraftUser == "" or minecraftUser is None:
@@ -289,7 +303,7 @@ class PostgresDatabase:
             self.__LOGGER.info("The user responded with " + str(reaction.emoji))
             if str(reaction.emoji) == "✅":
                 try:
-                    if self.is_player_authenticated(str(user.id)) == False:
+                    if self.is_player_authenticated(str(user.id), ip_address) == False:
                         self.delete_player_auth(str(user.id))
                         self.add_player_auth(str(user.id), id)
                         responseEmbed = embed.getBaseEmbed("", discord.Colour.green())
