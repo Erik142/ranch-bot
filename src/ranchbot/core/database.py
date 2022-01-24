@@ -339,6 +339,6 @@ class PostgresDatabase:
         future = asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT.loop)
         final_message = future.result()
 
-        time.sleep(60000)
+        time.sleep(60)
         asyncio.run_coroutine_threadsafe(final_message.delete(), self.__BOT.loop)
         asyncio.run_coroutine_threadsafe(message.delete(), self.__BOT.loop)
