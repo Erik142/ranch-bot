@@ -115,6 +115,35 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "hikari"
+version = "2.0.0.dev105"
+description = "A sane Discord API for Python 3 built on asyncio and good intentions"
+category = "main"
+optional = false
+python-versions = ">=3.8.0,<3.11"
+
+[package.dependencies]
+aiohttp = ">=3.8,<4.0"
+attrs = ">=21.4,<22.0"
+colorlog = ">=6.6,<7.0"
+multidict = ">=5.2,<6.0"
+pure25519 = "0.0.1"
+
+[package.extras]
+speedups = ["aiodns (>=3.0,<4.0)", "cchardet (>=2.1,<3.0)", "Brotli (>=1.0,<2.0)", "ciso8601 (>=2.2,<3.0)", "ed25519 (>=1.5,<2.0)"]
+
+[[package]]
+name = "hikari-lightbulb"
+version = "2.1.3"
+description = "A simple to use command handler for Hikari"
+category = "main"
+optional = false
+python-versions = ">=3.8.0,<3.11"
+
+[package.dependencies]
+hikari = ">=2.0.0.dev105,<2.1.0"
+
+[[package]]
 name = "idna"
 version = "3.3"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -205,29 +234,6 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[[package]]
-name = "py-cord"
-version = "2.0.0a4850+gd2878166"
-description = "A Python wrapper for the Discord API"
-category = "main"
-optional = false
-python-versions = ">=3.8.0"
-develop = false
-
-[package.dependencies]
-aiohttp = ">=3.6.0,<3.9.0"
-
-[package.extras]
-docs = ["sphinx (==4.4.0)", "sphinxcontrib-trio (==1.1.2)", "sphinxcontrib-websupport"]
-speed = ["orjson (>=3.5.4)", "aiodns (>=1.1)", "brotlipy", "cchardet"]
-voice = ["PyNaCl (>=1.3.0,<1.6)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/Pycord-Development/pycord.git"
-reference = "master"
-resolved_reference = "d2878166df9bc5c6f9ea86587876d571daab28ec"
 
 [[package]]
 name = "pyparsing"
@@ -332,7 +338,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "55c404f06e985388c9be2c76ab2186dac6c6de1288b6e99c4dd35b05617ec273"
+content-hash = "61308283770382a9127407df9609c5456ce5a8829f2d68886e4bb97626da15d1"
 
 [metadata.files]
 aiohttp = [
@@ -560,6 +566,14 @@ frozenlist = [
     {file = "frozenlist-1.2.0-cp39-cp39-win_amd64.whl", hash = "sha256:735f386ec522e384f511614c01d2ef9cf799f051353876b4c6fb93ef67a6d1ee"},
     {file = "frozenlist-1.2.0.tar.gz", hash = "sha256:68201be60ac56aff972dc18085800b6ee07973c49103a8aba669dee3d71079de"},
 ]
+hikari = [
+    {file = "hikari-2.0.0.dev105-py3-none-any.whl", hash = "sha256:c167e5ee4bb1bf4b4f9a0885573f45d76f6e6c0d4913304cf2962196becb4057"},
+    {file = "hikari-2.0.0.dev105.tar.gz", hash = "sha256:3b249c427363d26cd5b0ad2fa5f1172e4d03eceddbc27b5f0d10c991060db82c"},
+]
+hikari-lightbulb = [
+    {file = "hikari-lightbulb-2.1.3.tar.gz", hash = "sha256:39aecc22e2f7ee6aedb9413a9c2eb1b60f64576f98f3750744d09a2caf8e32a7"},
+    {file = "hikari_lightbulb-2.1.3-py3-none-any.whl", hash = "sha256:2bb61d8663ee5247963cd5741f2313a1ef0283e70cf76f3e0bae5dcd568b3d64"},
+]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
@@ -665,7 +679,6 @@ py = [
     {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
     {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
 ]
-py-cord = []
 pyparsing = [
     {file = "pyparsing-3.0.6-py3-none-any.whl", hash = "sha256:04ff808a5b90911829c55c4e26f75fa5ca8a2f5f36aa3a51f68e27033341d3e4"},
     {file = "pyparsing-3.0.6.tar.gz", hash = "sha256:d9bdec0013ef1eb5a84ab39a3b3868911598afa494f5faa038647101504e2b81"},

@@ -28,7 +28,8 @@ tomli = "^2.0.0"
 yarl = "^1.7.2"
 psycopg = "^3.0.8"
 pika = "^1.2.0"
-py-cord = {git = "https://github.com/Pycord-Development/pycord.git"}
+hikari = "^2.0.0-alpha.105"
+hikari-lightbulb = "^2.1.3"
 
 [tool.poetry.dev-dependencies]
 
