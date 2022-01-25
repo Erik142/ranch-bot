@@ -2,11 +2,12 @@ import sys
 import logging
 import threading
 
+from async_timeout import asyncio
+
 from ranchbot.core.bot import Bot
 from ranchbot.core import args
 from ranchbot.core.config import Config
 from ranchbot.core.database import PostgresDatabase
-from ranchbot.messagequeue.messagequeue import MessageQueue
 from ranchbot.util.log import log
 
 logger = None
@@ -25,12 +26,12 @@ if __name__ == "__main__":
 
     try:
         bot = Bot(config.getPrefix(), config.getToken())
-        bot.loadCommands()
+        loop = asyncio.get_event_loop()
         database = PostgresDatabase(config.getPostgresConnectionString())
-        db_thread = threading.Thread(target=database.listen, args=[bot])
+        db_thread = threading.Thread(target=database.listen, args=[bot, loop])
         db_thread.start()
         logger.info("Starting bot...")
-        bot.run(config.getToken())
+        bot.run()
     except (KeyboardInterrupt, SystemExit):
         logger.warn("KeyboardInterrupt triggered")
         bot.close()

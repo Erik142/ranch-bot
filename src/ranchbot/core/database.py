@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
+from typing import Callable
+from hikari import Color, ReactionAddEvent, ReactionEvent, UnicodeEmoji
+from hikari.users import User
+import hikari.events as events
+import colour
+
 import asyncio
+from asyncio.exceptions import TimeoutError
 import threading
-import discord
+import concurrent.futures as futures
 import psycopg
 
-import select
 import time
 
 from ranchbot.core.bot import Bot
@@ -126,7 +132,7 @@ class PostgresDatabase:
 
                     return reg_code
         except Exception as e:
-            self.__LOGGER.error("An error occured while retrieving the Discord id for the Minecraft user with user name %s: %s", minecraftName, e)
+            self.__LOGGER.error("An error occured while retrieving the registration code for the Discord user with id %s: %s", discord_id, e)
 
         return ""
 
@@ -193,11 +199,9 @@ class PostgresDatabase:
         self.__NOTIFICATION_GENERATOR.close()
         self.__CLOSE = True
 
-    def listen(self, bot: Bot):
+    def listen(self, bot: Bot, loop: asyncio.AbstractEventLoop):
         self.__BOT = bot
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop = asyncio.get_event_loop()
+        self.__BOT_LOOP = loop
 
         while not self.__CLOSE:
             try:
@@ -245,10 +249,10 @@ class PostgresDatabase:
             self.__LOGGER.error("The Discord ID for the minecraft user with username %s could not be found in PostgreSQL")
             return
 
-        future = asyncio.run_coroutine_threadsafe(self.__BOT.fetch_user(int(discordId)), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(self.__BOT.rest.fetch_user(discordId), self.__BOT_LOOP)
         user = future.result()
 
-        loginEmbed = embed.getBaseEmbed("", discord.Colour.blue())
+        loginEmbed = embed.getBaseEmbed("", Color.of(colour.Color("blue").hex))
         loginEmbed.add_field(
             name="Minecraft login",
             value="The Minecraft user "
@@ -256,89 +260,93 @@ class PostgresDatabase:
             + " tried to login on the Discord server. Was it you?",
         )
 
-        future = asyncio.run_coroutine_threadsafe(user.send(embed=loginEmbed), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(user.send(embed=loginEmbed), self.__BOT_LOOP)
         message = future.result()
-        asyncio.run_coroutine_threadsafe(message.add_reaction("✅"), self.__BOT.loop)
-        asyncio.run_coroutine_threadsafe(message.add_reaction("❌"), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(message.add_reaction("✅"), self.__BOT_LOOP)
+        future.result()
+        future = asyncio.run_coroutine_threadsafe(message.add_reaction("❌"), self.__BOT_LOOP)
+        future.result()
 
-        responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
+        responseEmbed = embed.getBaseEmbed("", Color.of(colour.Color("red").hex))
         reaction = None
 
-        startTime = time.time()
+        pred = lambda e: self.reaction_predicate(e, user.id, message.id)
 
-        while reaction is None:
+        self.__LOGGER.info("Listening for message reactions...")
+        startTime = time.time()
+        while True:
             currentTime = time.time()
+
             elapsed = currentTime - startTime
 
-            if elapsed > 60:
+            if elapsed >= 60:
                 break
 
-            future = asyncio.run_coroutine_threadsafe(user.fetch_message(message.id), self.__BOT.loop)
-            message = future.result()
-
-            for r in message.reactions:
-                if r.count == 2:
-                    reaction = r
-                    break
-
-            time.sleep(0.5)
-
-        for r in message.reactions:
-            self.__LOGGER.info(
-                "Reaction with emoji "
-                + str(r.emoji)
-                + " has "
-                + str(r.count)
-                + " reactions."
-            )
+            try:
+                future = asyncio.run_coroutine_threadsafe(self.__BOT.wait_for(events.ReactionAddEvent, timeout=(60 - elapsed), predicate=pred), self.__BOT_LOOP)
+                event = future.result()
+                reaction = str(event.emoji_name)
+            except TimeoutError:
+                self.__LOGGER.info("Did not receive any reaction from the user...")
+            except asyncio.CancelledError:
+                self.__LOGGER.error("The reaction event was cancelled!")
+                continue
+            break
 
         if reaction is None:
             self.__LOGGER.info("The login request timed out")
-            responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
+            responseEmbed = embed.getBaseEmbed("", Color.of(colour.Color("red").hex))
             responseEmbed.add_field(
                 name="Minecraft login",
                 value="The login request timed out and has been denied.",
             )
         else:
-            self.__LOGGER.info("The user responded with " + str(reaction.emoji))
-            if str(reaction.emoji) == "✅":
+            self.__LOGGER.info("The user responded with " + reaction)
+            if reaction == "✅":
                 try:
                     if self.is_player_authenticated(str(user.id), ip_address) == False:
                         self.delete_player_auth(str(user.id))
                         self.add_player_auth(str(user.id), id)
-                        responseEmbed = embed.getBaseEmbed("", discord.Colour.green())
+                        responseEmbed = embed.getBaseEmbed("", Color.of(colour.Color("green").hex))
                         responseEmbed.add_field(
                             name="Minecraft login",
                             value="The login request has been approved. You can now join the protected Minecraft servers for the next 30 minutes.",
                         )
                     else:
-                        responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
+                        responseEmbed = embed.getBaseEmbed("", Color.of(colour.Color("red").hex))
                         responseEmbed.add_field(
                             name="Minecraft login",
                             value="You are already logged into the Minecraft server.",
                         )
                 except Exception as e:
                     self.__LOGGER.error("An error occured while finalizing the authentication request with id %s: %s", id, e)
-                    errorEmbed = embed.getBaseEmbed("", discord.Colour.red())
+                    errorEmbed = embed.getBaseEmbed("", Color.of(colour.Color("red").hex))
                     errorEmbed.add_field(
                         name="Minecraft login",
                         value="An error occured while logging you in. Please try again or contact one of the moderators if the issue persists."
                     )
                     try:
-                        asyncio.run_coroutine_threadsafe(user.send(embed=errorEmbed), self.__BOT.loop)
+                        asyncio.run_coroutine_threadsafe(user.send(embed=errorEmbed), self.__BOT_LOOP)
                     except Exception as e1:
                         self.__LOGGER.error("Could not send login error message back to the Discord user: %s", e1)
                     return
-            elif str(reaction.emoji) == "❌":
-                responseEmbed = embed.getBaseEmbed("", discord.Colour.red())
+            elif reaction == "❌":
+                responseEmbed = embed.getBaseEmbed("", Color.of(colour.Color("red").hex))
                 responseEmbed.add_field(
                     name="Minecraft login",
                     value="The login request has been denied. Contact the Discord moderators if you keep receiving login requests from the Minecraft server.",
                 )
 
-        future = asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(user.send(embed=responseEmbed), self.__BOT_LOOP)
         final_message = future.result()
 
         time.sleep(60)
-        asyncio.run_coroutine_threadsafe(final_message.delete(), self.__BOT.loop)
-        asyncio.run_coroutine_threadsafe(message.delete(), self.__BOT.loop)
+        future = asyncio.run_coroutine_threadsafe(final_message.delete(), self.__BOT_LOOP)
+        future.result()
+        future = asyncio.run_coroutine_threadsafe(message.delete(), self.__BOT_LOOP)
+        future.result()
+
+    def reaction_predicate(self, e : ReactionAddEvent, userId: int, messageId: int) -> bool:
+        self.__LOGGER.info("Running reaction predicate. Received user id: " + str(userId) + ", message id: " + str(messageId) + ", and the reaction: " + str(e.emoji_name))
+        reaction = str(e.emoji_name)
+        return e.message_id == messageId and e.user_id == userId and (reaction == "✅" or reaction == "❌")

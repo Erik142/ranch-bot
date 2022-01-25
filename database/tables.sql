@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS AuthenticationRequests(
        ipAddress TEXT NOT NULL,
        handled BOOLEAN NOT NULL DEFAULT FALSE,
        created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (minecraftName) REFERENCES Players(minecraftName)
+       FOREIGN KEY (minecraftName) REFERENCES Players(minecraftName) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS PlayerAuthentications (
@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS PlayerAuthentications (
        discordName TEXT NOT NULL UNIQUE,
        expiration TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP + (30 * INTERVAL '1 minute'),
        PRIMARY KEY (id),
-       FOREIGN KEY (discordName) REFERENCES Players(discordName),
-       FOREIGN KEY (authRequestId) REFERENCES AuthenticationRequests(id)
+       FOREIGN KEY (discordName) REFERENCES Players(discordName) ON DELETE CASCADE ON UPDATE CASCADE,
+       FOREIGN KEY (authRequestId) REFERENCES AuthenticationRequests(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

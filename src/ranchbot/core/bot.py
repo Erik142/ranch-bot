@@ -17,14 +17,14 @@ class Bot(lightbulb.BotApp):
     __MODULE_PREFIX = "ranchbot"
     __COG_FILE_REGEXP = "**/*.py"
 
-    __LOGGER = log.getLogger(__name__)
+    __logger = log.getLogger(__name__)
 
     def __init__(self, prefix: str, token: str):
         if os.name != "nt":
             import uvloop
             uvloop.install()
 
-        super.__init__(token, prefix, force_color=True)
+        super().__init__(token, prefix, force_color=True)
         self.__plugins = self.__get_plugins()
 
     def __get_plugins(self) -> list[str]:
@@ -41,7 +41,7 @@ class Bot(lightbulb.BotApp):
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
                 pathStr = pathStr[pathStr.find(self.__COGS_BASE_PATH) :]
-                self.__LOGGER.debug(pathStr)
+                self.__logger.debug(pathStr)
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
                 pathStr = str.replace(pathStr, pathSeparator, ".")
@@ -51,14 +51,14 @@ class Bot(lightbulb.BotApp):
     def load_plugins(self):
         for plugin in self.__plugins:
             try:
-                self.__LOGGER.info(f"Loading plugin {plugin}")
+                self.__logger.info(f"Loading plugin {plugin}")
                 self.load_extensions(plugin)
-                self.__LOGGER.info(f"Loaded plugin {plugin}")
+                self.__logger.info(f"Loaded plugin {plugin}")
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
-                self.__LOGGER.error("Failed to load cog {}\n{}".format(cog, exc))
+                self.__logger.error("Failed to load cog {}\n{}".format(plugin, exc))
 
-    async def on_started(self):
+    async def on_started(self, event: hikari.StartedEvent):
         self.__logger.info("Bot is started!")
         self.load_plugins()
 
