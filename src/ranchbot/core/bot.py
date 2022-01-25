@@ -4,42 +4,30 @@ from pathlib import Path
 from sys import platform
 from asyncio import AbstractEventLoop
 
-import discord
-from discord.ext import commands
+import hikari
+import hikari.presences
+import lightbulb
 
 from ranchbot.util.log import log
 import ranchbot.core.version as version
 
 
-class Bot(discord.Bot):
+class Bot(lightbulb.BotApp):
     __COGS_BASE_PATH = "commands"
     __MODULE_PREFIX = "ranchbot"
     __COG_FILE_REGEXP = "**/*.py"
 
-    __STATUS = ""
-    __LOGGER = log.getLogger(__name__)
+    __logger = log.getLogger(__name__)
 
-    def __init__(self, prefix: str, status: str, eventLoop: AbstractEventLoop = None):
-        intents = discord.Intents.default()
+    def __init__(self, prefix: str, token: str):
+        if os.name != "nt":
+            import uvloop
+            uvloop.install()
 
-        if eventLoop != None:
-            super().__init__(
-                command_prefix=prefix,
-                help_command=None,
-                intents=intents,
-                loop=eventLoop,
-            )
-        else:
-            intents.members = True
-            super().__init__(
-                command_prefix=prefix,
-                help_command=None,
-                intents=intents,
-            )
-        self.__STATUS = status
-        self.__COGS = self.__getCogs()
+        super().__init__(token, prefix, force_color=True)
+        self.__plugins = self.__get_plugins()
 
-    def __getCogs(self) -> list[str]:
+    def __get_plugins(self) -> list[str]:
         pathSeparator = "/"
         if platform == "win32":
             pathSeparator = "\\"
@@ -53,25 +41,33 @@ class Bot(discord.Bot):
                 pathStr = str.removesuffix(pathStr, ".py")
                 pathStr = str.replace(pathStr, ".", "")
                 pathStr = pathStr[pathStr.find(self.__COGS_BASE_PATH) :]
-                self.__LOGGER.debug(pathStr)
+                self.__logger.debug(pathStr)
                 pathStr = str.removeprefix(pathStr, pathSeparator)
                 pathStr = str.removesuffix(pathStr, pathSeparator)
                 pathStr = str.replace(pathStr, pathSeparator, ".")
                 cogs.append(self.__MODULE_PREFIX + "." + pathStr)
         return cogs
 
-    def loadCommands(self):
-        for cog in self.__COGS:
+    def load_plugins(self):
+        for plugin in self.__plugins:
             try:
-                self.__LOGGER.info(f"Loading cog {cog}")
-                self.load_extension(cog)
-                self.__LOGGER.info(f"Loaded cog {cog}")
+                self.__logger.info(f"Loading plugin {plugin}")
+                self.load_extensions(plugin)
+                self.__logger.info(f"Loaded plugin {plugin}")
             except Exception as e:
                 exc = "{}: {}".format(type(e).__name__, e)
-                self.__LOGGER.error("Failed to load cog {}\n{}".format(cog, exc))
+                self.__logger.error("Failed to load cog {}\n{}".format(plugin, exc))
 
-    async def on_ready(self):
-        self.__LOGGER.info("Bot is ready!")
-        await self.change_presence(
-            status=discord.Status.online, activity=discord.Game("version " + version.__version__)
+    async def on_started(self, event: hikari.StartedEvent):
+        self.__logger.info("Bot is started!")
+        self.load_plugins()
+
+    def run(self):
+        self.event_manager.subscribe(hikari.StartedEvent, self.on_started)
+
+        super().run(
+            activity=hikari.Activity(
+                name = version.__version__,
+                type=hikari.presences.ActivityType.PLAYING
+            )
         )

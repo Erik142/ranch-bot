@@ -1,16 +1,13 @@
-import asyncio
-import os
 import sys
 import logging
 import threading
 
-from dotenv import load_dotenv
+from async_timeout import asyncio
 
 from ranchbot.core.bot import Bot
 from ranchbot.core import args
 from ranchbot.core.config import Config
 from ranchbot.core.database import PostgresDatabase
-from ranchbot.messagequeue.messagequeue import MessageQueue
 from ranchbot.util.log import log
 
 logger = None
@@ -28,20 +25,15 @@ if __name__ == "__main__":
     db_thread = None
 
     try:
-        bot = Bot(config.getPrefix(), config.getStatus())
-        bot.loadCommands()
+        bot = Bot(config.getPrefix(), config.getToken())
+        loop = asyncio.get_event_loop()
         database = PostgresDatabase(config.getPostgresConnectionString())
-        # loop = asyncio.get_event_loop()
-        db_thread = threading.Thread(target=database.listen, args=[bot])
-        #loop.create_task(database.listen(bot))
+        db_thread = threading.Thread(target=database.listen, args=[bot, loop])
         db_thread.start()
-        # queueConsumer = MessageQueue(config.getRabbitMqConnectionString(), bot)
         logger.info("Starting bot...")
-        bot.run(config.getToken())
+        bot.run()
     except (KeyboardInterrupt, SystemExit):
         logger.warn("KeyboardInterrupt triggered")
         bot.close()
         database.close()
-        #db_thread.join()
         sys.exit(0)
-        # queueConsumer.close()
