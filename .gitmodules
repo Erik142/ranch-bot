@@ -1,3 +1,0 @@
-[submodule "src/dpytest"]
-	path = src/dpytest
-	url = https://github.com/Erik142/dpytest.git
