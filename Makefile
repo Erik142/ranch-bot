@@ -11,7 +11,6 @@ test:
 .PHONY: deps
 deps:
 	python3 -m poetry install
-	python3 -m poetry run pip install -e ./src/dpytest
 
 .PHONY: poetry
 poetry:
